@@ -25,3 +25,42 @@ class Deck(object):
         self.deck = [[0 for j in range(Deck.NUM_SUITS)] for i in range(Deck.NUM_RANKS)]
         self.shuffled_cards = random.shuffle([i for i in range(Deck.NUM_SUITS * Deck.NUM_RANKS)])
         self.cards_dealt = 0
+
+    """
+    hand_type:  "single" - high card, pair, triple, 4, 5, 6, 7, 8
+                "double" - two pair
+                "five" - straight, flush, straight-flush
+                "full house"
+    """
+    def contains(self, hand_type, rank_bound, rank_bound2=None, count_bound=None, suit_bound=None):
+        count_wild = sum(self.deck[0])
+        if hand_type == "single":
+            assert rank_bound is not None and count_bound is not None
+            count = sum(self.deck[rank_bound])
+            return count + count_wild >= count_bound
+        if hand_type == "double":
+            assert rank_bound is not None and rank_bound2 is not None
+            count = sum(self.deck[rank_bound])
+            count2 = sum(self.deck[rank_bound2])
+            return count_wild + min(count - 2, 0) + min(count2 - 2, 0) >= 0
+        if hand_type == "full house":
+            assert rank_bound is not None
+            count = sum(self.deck[rank_bound])
+            count2 = 0
+            for i in range(1, Deck.NUM_RANKS):
+                if i != rank_bound:
+                    count2 = max(sum(self.deck[i]), count2)
+            return count_wild + min(count - 3, 0) + min(count2 - 2, 0) >= 0
+        # should be able to deal with straights and flushes with more than 5.
+        if hand_type == "five":
+            search_range = self.deck
+            if suit_bound is not None:  # flush
+                search_range = [list([j] for j in i) for i in zip(*self.deck)][suit_bound]
+            if rank_bound2 is not None:  # straight
+                search_range = search_range[max(1, rank_bound-4):rank_bound+1]
+            else:
+                search_range = search_range[1:rank_bound+1]
+            count = sum([sum(i) for i in search_range])
+            return count_wild + count >= count_bound
+        else:
+            return None
