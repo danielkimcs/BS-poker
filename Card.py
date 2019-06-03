@@ -21,7 +21,15 @@ class Card(object):
     def __lt__(self, other):
         assert isinstance(other, Card)
         return self.num < other.get_num()
-    
+
+    def __le__(self, other):
+        assert isinstance(other, Card)
+        return self.num <= other.get_num()
+
     def __gt__(self, other):
         assert isinstance(other, Card)
         return self.num > other.get_num()
+
+    def __ge__(self, other):
+        assert isinstance(other, Card)
+        return self.num >= other.get_num()
