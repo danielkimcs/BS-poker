@@ -1,16 +1,16 @@
 from BSPokerProject.Card import Card
 
 class Player(object):
-    def __init__(self, num=1):
-        self.num = num
+    def __init__(self, card_count=1):
+        self.card_count = card_count
         self.cards = []
         self.bet = None
 
-    def increment(self):
-        self.num += 1
+    def increment_card_count(self):
+        self.card_count += 1
 
-    def get_num(self):
-        return self.num
+    def get_card_count(self):
+        return self.card_count
 
     def get_cards(self):
         return self.cards
