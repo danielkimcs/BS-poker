@@ -16,7 +16,7 @@ class Card(object):
 
     def __eq__(self, other):
         assert isinstance(other, Card)
-        return self.num == other.get_num() and self.suit == other.get_suit()
+        return self.num == 2 or (self.num == other.get_num() and self.suit == other.get_suit())
 
     def __lt__(self, other):
         assert isinstance(other, Card)
