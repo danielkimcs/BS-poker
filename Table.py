@@ -1,6 +1,6 @@
-from BSPokerProject.Card import Card
-from BSPokerProject.Deck import Deck
-from BSPokerProject.Player import Player
+from Card import Card
+from Deck import Deck
+from Player import Player
 
 class Table(object):
     def __init__(self, max_player_cards):
@@ -22,11 +22,3 @@ class Table(object):
             player.empty_hand()
         self.deck.reset()
 
-    # TODO - fix
-    def contains_hand(self, cards_in_hand):
-        assert isinstance(cards_in_hand, list)
-        cards_on_table = []
-        for player in self.players:
-            cards_on_table += player.get_cards()
-
-        return set(cards_in_hand) <= set(cards_on_table)

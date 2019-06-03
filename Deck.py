@@ -1,5 +1,5 @@
 import random
-from BSPokerProject.Card import Card
+from Card import Card
 
 class Deck(object):
     NUM_SUITS = 4

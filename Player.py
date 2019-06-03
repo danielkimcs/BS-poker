@@ -1,4 +1,4 @@
-from BSPokerProject.Card import Card
+from Card import Card
 
 class Player(object):
     def __init__(self, card_count=1):
