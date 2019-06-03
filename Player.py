@@ -1,10 +1,9 @@
-from BSPokerProject.Card import Card
+from Card import *
 
 class Player(object):
     def __init__(self, card_count=1):
         self.card_count = card_count
         self.cards = []
-        self.bet = None
 
     def increment_card_count(self):
         self.card_count += 1
@@ -21,10 +20,4 @@ class Player(object):
     def add_card(self, card):
         assert isinstance(card, Card)
         self.cards.append(card)
-
-    def set_bet(self, bet):
-        self.bet = bet
-
-    def get_bet(self):
-        return self.bet
 
