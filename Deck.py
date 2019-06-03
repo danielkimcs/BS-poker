@@ -1,4 +1,4 @@
-from BSPokerProject.Card import *
+from Card import *
 from random import *
 
 
