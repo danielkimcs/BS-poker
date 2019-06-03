@@ -1,5 +1,5 @@
 from BSPokerProject.Card import Card
-from BSPokerProject.Deck_New import Deck
+from BSPokerProject.Deck import Deck
 from BSPokerProject.Player import Player
 
 class Table(object):
