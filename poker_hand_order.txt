@@ -6,8 +6,8 @@ straight
 flush
 full house
 four of a kind
-straight flush
 five of a kind
+straight flush
 six of a kind
 seven of a kind
 eight of a kind
