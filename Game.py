@@ -10,6 +10,9 @@ class Game(object):
         self.max_num_of_cards = max_num_of_cards
         self.table = Table(max_num_of_cards)
         for num in range(self.num_of_players):
-            self.table.add_player(Player())
+            self.table.add_player(Player(starting_num_of_cards))
+        self.current_player = 0
+        self.table.distribute_cards()
 
-
+    def get_table(self):
+        return self.table

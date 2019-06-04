@@ -1,6 +1,7 @@
 from tkinter import *
 from Player import Player
 from Table import Table
+from Game import Game
 
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 800
@@ -53,18 +54,26 @@ class Application(Frame):
 
     def set_up_board(self):
         self.welcome_frame.grid_forget()
+
         self.board_frame = Frame(self)
-        self.board_frame.grid()
+        self.board_frame.grid(row = 0)
 
         self.num_players = int(self.num_players_spinbox.get())
         self.starting_num_of_cards = int(self.num_cards_spinbox.get())
 
-        self.table = Table(NUMBER_OF_STRIKES)
+        self.game_obj = Game(self.num_players, self.starting_num_of_cards, NUMBER_OF_STRIKES)
         for i in range(self.num_players):
-            self.table.add_player(Player(self.starting_num_of_cards))
             current_label = Label(self.board_frame,
                                   text = "Player " + str(i+1))
             current_label.grid(row = i, column = 0)
+        self.set_up_options()
+
+    def set_up_options(self):
+        self.options_frame = Frame(self)
+        self.options_frame.grid(row = 1)
+        self.current_player_label = Label(self.options_frame,
+                                          text = "Current turn: ")
+        self.current_player_label.grid(row = 0)
 
 def main():
     root = Tk()
