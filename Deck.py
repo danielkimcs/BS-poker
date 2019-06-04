@@ -57,7 +57,7 @@ class Deck(object):
             if suit_bound is not None:  # flush
                 search_range = [list([j] for j in i) for i in zip(*self.deck)][suit_bound]
             if rank_bound2 is not None:  # straight
-                search_range = search_range[max(1, rank_bound-4):rank_bound+1]
+                search_range = search_range[max(1, rank_bound2):rank_bound+1]
             else:
                 search_range = search_range[1:rank_bound+1]
             count = sum([sum(i) for i in search_range])
