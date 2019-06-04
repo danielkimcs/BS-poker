@@ -12,6 +12,9 @@ class Table(object):
         assert isinstance(player, Player)
         self.players.append(player)
 
+    def get_players(self):
+        return self.players
+
     def distribute_cards(self):
         for player in self.players:
             for i in range(player.get_card_count()):
