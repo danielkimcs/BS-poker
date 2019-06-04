@@ -8,14 +8,15 @@ class Deck(object):
 
     def __init__(self):
         self.deck = [[0 for j in range(Deck.NUM_SUITS)] for i in range(Deck.NUM_RANKS)]
-        self.shuffled_cards = random.shuffle([i for i in range(Deck.NUM_SUITS * Deck.NUM_RANKS)])
+        self.shuffled_cards = [i for i in range(Deck.NUM_SUITS * Deck.NUM_RANKS)]
+        random.shuffle(self.shuffled_cards)
         self.cards_dealt = 0
 
     def remove_card(self):
         card = self.shuffled_cards[self.cards_dealt]
         self.cards_dealt += 1
 
-        row = card / 4
+        row = int(card / 4)
         col = card % 4
         self.deck[row][col] = 1
 
@@ -23,7 +24,8 @@ class Deck(object):
 
     def reset(self):
         self.deck = [[0 for j in range(Deck.NUM_SUITS)] for i in range(Deck.NUM_RANKS)]
-        self.shuffled_cards = random.shuffle([i for i in range(Deck.NUM_SUITS * Deck.NUM_RANKS)])
+        self.shuffled_cards = [i for i in range(Deck.NUM_SUITS * Deck.NUM_RANKS)]
+        random.shuffle(self.shuffled_cards)
         self.cards_dealt = 0
 
     """
