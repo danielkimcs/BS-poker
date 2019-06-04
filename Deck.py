@@ -27,10 +27,29 @@ class Deck(object):
         self.cards_dealt = 0
 
     """
+    Deck.contains - parameters:
+
     hand_type:  "single" - high card, pair, triple, 4, 5, 6, 7, 8
                 "double" - two pair
                 "five" - straight, flush, straight-flush
                 "full house"
+
+    hand_type - pretty self explanatory. The type of hand you are checking for.
+    This is should be the type of the last hand before BS is called
+
+    rank_bound - serves a few functions:
+    1. in the case of highs, pairs, doubles, full houses, it is just the primary rank being searched for
+    2. in the case of a flush or straight, it is the upper bound of the rank.
+
+    rank_bound2 -
+    1. in the case of two pair, it is the second rank
+    2. in the case of straights, it is the lower bound of the rank
+
+    count_bound -
+    1. the number of x of a kinds (1, 2, 3, 4, ... , 7, 8)
+    2. the number of cards in a straight or flush (should be 5, can be more)
+
+    suit_bound - for flushes, the suit it is in
     """
     def contains(self, hand_type, rank_bound, rank_bound2=None, count_bound=None, suit_bound=None):
         count_wild = sum(self.deck[0])
