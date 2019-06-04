@@ -2,6 +2,7 @@ from tkinter import *
 from Player import Player
 from Table import Table
 from Game import Game
+import random
 
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 800
@@ -10,13 +11,16 @@ MAXIMUM_PLAYERS = 15
 MINIMUM_STARTING_CARDS = 1
 MAXIMUM_STARTING_CARDS = 6
 NUMBER_OF_STRIKES = 5
-BACK_OF_CARD_PATH = "images/back_of_card.png"
+BACK_OF_CARD_PATH = "images/back_of_card.gif"
+BACK_OF_CARD_SCALE_FACTOR = 12
 
 class Application(Frame):
     def __init__(self, master):
         super(Application, self).__init__(master)
         self.grid()
         self.master = master
+        self.back_card_photo = PhotoImage(file=BACK_OF_CARD_PATH)
+        self.back_card_photo = self.back_card_photo.subsample(BACK_OF_CARD_SCALE_FACTOR, BACK_OF_CARD_SCALE_FACTOR)
         self.welcome()
 
     def welcome(self):
@@ -65,11 +69,20 @@ class Application(Frame):
         self.game_obj = Game(self.num_players, self.starting_num_of_cards, NUMBER_OF_STRIKES)
         for i in range(self.num_players):
             current_label = Label(self.board_frame,
-                                  text = "Player " + str(i+1))
+                                  text = "Player " + str(i+1),
+                                  padx = 20,
+                                  pady = 20)
             current_label.grid(row = i, column = 0)
+            card_frame = Frame(self.board_frame, width=200, height=self.back_card_photo.height()+15, padx=20)
+            card_frame.grid(row = i, column = 1)
+            self.display_back_cards(card_frame, self.starting_num_of_cards)
 
         self.set_up_options()
 
+    def display_back_cards(self, parent_frame, num_of_cards):
+        interval = (parent_frame.winfo_reqwidth() - self.back_card_photo.width())/(parent_frame.winfo_reqwidth() * (MAXIMUM_STARTING_CARDS - 1))
+        for i in range(num_of_cards):
+            Label(parent_frame, image=self.back_card_photo).place(relx=i*interval)
 
     def set_up_options(self):
         self.options_frame = Frame(self)
