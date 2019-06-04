@@ -79,7 +79,7 @@ class Deck(object):
                 search_range = search_range[max(1, rank_bound2):rank_bound+1]
             else:
                 search_range = search_range[1:rank_bound+1]
-            count = sum([sum(i) for i in search_range])
+            count = sum([sum(i) > 0 for i in search_range])
             return count_wild + count >= count_bound
         else:
             return None
