@@ -10,6 +10,7 @@ MAXIMUM_PLAYERS = 15
 MINIMUM_STARTING_CARDS = 1
 MAXIMUM_STARTING_CARDS = 6
 NUMBER_OF_STRIKES = 5
+BACK_OF_CARD_PATH = "images/back_of_card.png"
 
 class Application(Frame):
     def __init__(self, master):
@@ -66,7 +67,9 @@ class Application(Frame):
             current_label = Label(self.board_frame,
                                   text = "Player " + str(i+1))
             current_label.grid(row = i, column = 0)
+
         self.set_up_options()
+
 
     def set_up_options(self):
         self.options_frame = Frame(self)
