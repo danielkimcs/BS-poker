@@ -33,3 +33,6 @@ class Card(object):
     def __ge__(self, other):
         assert isinstance(other, Card)
         return self.rank >= other.get_rank()
+
+    def __str__(self):
+        return str(self.rank) + "," + self.suit

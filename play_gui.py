@@ -2,7 +2,6 @@ from tkinter import *
 from Player import Player
 from Table import Table
 from Game import Game
-import random
 
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 800
@@ -13,6 +12,9 @@ MAXIMUM_STARTING_CARDS = 6
 NUMBER_OF_STRIKES = 5
 BACK_OF_CARD_PATH = "images/back_of_card.gif"
 BACK_OF_CARD_SCALE_FACTOR = 12
+CLAIM_OPTIONS = [
+
+]
 
 class Application(Frame):
     def __init__(self, master):
@@ -76,6 +78,10 @@ class Application(Frame):
             card_frame = Frame(self.board_frame, width=200, height=self.back_card_photo.height()+15, padx=20)
             card_frame.grid(row = i, column = 1)
             self.display_back_cards(card_frame, self.starting_num_of_cards)
+
+        self.table_obj = self.game_obj.get_table()
+        self.players = self.table_obj.get_players()
+
 
         self.set_up_options()
 

@@ -21,3 +21,6 @@ class Player(object):
         assert isinstance(card, Card)
         self.cards.append(card)
 
+    def printHand(self):
+        for card in self.get_cards():
+            print(card, end=" ")

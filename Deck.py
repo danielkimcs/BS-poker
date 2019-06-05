@@ -4,6 +4,7 @@ from Card import Card
 class Deck(object):
     NUM_SUITS = 4
     NUM_TO_SUIT = {0: "S", 1: "H", 2: "C", 3: "D"}
+    SUIT_TO_NUM = {"S": 0, "H": 1, "C": 2, "D": 3}
     NUM_RANKS = 13
 
     def __init__(self):
@@ -54,6 +55,15 @@ class Deck(object):
     suit_bound - for flushes, the suit it is in
     """
     def contains(self, hand_type, rank_bound, rank_bound2=None, count_bound=None, suit_bound=None):
+        # compensate
+        if rank_bound is not None:
+            rank_bound -= 2
+        if rank_bound2 is not None:
+            rank_bound2 -= 2
+        if suit_bound is not None:
+            assert suit_bound in Deck.SUIT_TO_NUM.keys()
+            suit_bound = Deck.SUIT_TO_NUM[suit_bound]
+
         count_wild = sum(self.deck[0])
         if hand_type == "single":
             assert rank_bound is not None and count_bound is not None
