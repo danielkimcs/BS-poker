@@ -87,9 +87,13 @@ class Application(Frame):
                                   text = "Player " + str(i+1),
                                   padx = 20,
                                   pady = 20)
-            current_label.grid(row = i, column = 0)
             card_frame = Frame(self.board_frame, width=200, height=self.back_card_photo.height()+15, padx=20)
-            card_frame.grid(row = i, column = 1)
+            if i <= 3:
+                current_label.grid(row = i, column = 0)
+                card_frame.grid(row = i, column = 1)
+            else:
+                current_label.grid(row=i-4, column=2)
+                card_frame.grid(row=i-4, column=3)
             self.display_back_cards(card_frame, self.starting_num_of_cards)
 
         self.table_obj = self.game_obj.get_table()
