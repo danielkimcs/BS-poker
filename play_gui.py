@@ -6,15 +6,12 @@ from Game import Game
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 800
 MINIMUM_PLAYERS = 2
-MAXIMUM_PLAYERS = 15
+MAXIMUM_PLAYERS = 8
 MINIMUM_STARTING_CARDS = 1
-MAXIMUM_STARTING_CARDS = 6
+MAXIMUM_STARTING_CARDS = 5
 NUMBER_OF_STRIKES = 5
 BACK_OF_CARD_PATH = "images/back_of_card.gif"
 BACK_OF_CARD_SCALE_FACTOR = 12
-CLAIM_OPTIONS = [
-
-]
 
 class Application(Frame):
     def __init__(self, master):
@@ -23,6 +20,22 @@ class Application(Frame):
         self.master = master
         self.back_card_photo = PhotoImage(file=BACK_OF_CARD_PATH)
         self.back_card_photo = self.back_card_photo.subsample(BACK_OF_CARD_SCALE_FACTOR, BACK_OF_CARD_SCALE_FACTOR)
+        self.claim_options = [
+            "High card",
+            "Pair",
+            "Two pair",
+            "Three of a kind",
+            "Straight",
+            "Flush",
+            "Full house",
+            "Four of a kind",
+            "Five of a kind",
+            "Six of a kind",
+            "Straight flush",
+            "Royal flush",
+            "Seven of a kind",
+            "Eight of a kind"
+        ]
         self.welcome()
 
     def welcome(self):
@@ -96,6 +109,14 @@ class Application(Frame):
         self.current_player_label = Label(self.options_frame,
                                           text = "Current turn: ")
         self.current_player_label.grid(row = 0)
+
+        self.hand_label = Label(self.options_frame,
+                                text = "Claim hand:")
+        self.hand_label.grid(row = 1, column = 0)
+        self.hand_menu_str = StringVar()
+        self.hand_menu_str.set(self.claim_options[0])
+        self.hand_menu = OptionMenu(self.options_frame, self.hand_menu_str, *self.claim_options)
+        self.hand_menu.grid(row = 1, column = 1)
 
 def main():
     root = Tk()
