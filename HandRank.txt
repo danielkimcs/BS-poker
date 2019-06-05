@@ -7,8 +7,8 @@
 7- full house
 8- four of a kind
 9- five of a kind
-10- straight flush
-11- royal flush
-12- six of a kind
+10- six of a kind
+11- straight flush
+12- royal flush
 13- seven of a kind
 14- eight of a kind
