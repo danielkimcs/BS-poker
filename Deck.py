@@ -87,11 +87,12 @@ class Deck(object):
             search_range = self.deck
             if suit_bound is not None:  # flush
                 search_range = [list([j] for j in i) for i in zip(*self.deck)][suit_bound]
+                if search_range[rank_bound] == 0:  # flushes must contain the highest card
+                    return False
             if rank_bound2 is not None:  # straight
                 search_range = search_range[max(1, rank_bound2):rank_bound+1]
             else:
                 search_range = search_range[1:rank_bound+1]
             count = sum([sum(i) > 0 for i in search_range])
             return count_wild + count >= count_bound
-        else:
-            return None
+        return None
