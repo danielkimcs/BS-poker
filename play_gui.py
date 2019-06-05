@@ -1,7 +1,6 @@
 from tkinter import *
 from Player import Player
 from Table import Table
-from Game import Game
 
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 800
@@ -12,6 +11,21 @@ MAXIMUM_STARTING_CARDS = 5
 NUMBER_OF_STRIKES = 5
 BACK_OF_CARD_PATH = "images/back_of_card.gif"
 BACK_OF_CARD_SCALE_FACTOR = 12
+CLAIM_OPTIONS = ["High card",
+                 "Pair",
+                 "Two pair",
+                 "Three of a kind",
+                 "Straight",
+                 "Flush",
+                 "Full house",
+                 "Four of a kind",
+                 "Five of a kind",
+                 "Six of a kind",
+                 "Straight flush",
+                 "Royal flush",
+                 "Seven of a kind",
+                 "Eight of a kind"]
+RANK_OPTIONS = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "K", "A"]
 
 class Application(Frame):
     def __init__(self, master):
@@ -20,22 +34,7 @@ class Application(Frame):
         self.master = master
         self.back_card_photo = PhotoImage(file=BACK_OF_CARD_PATH)
         self.back_card_photo = self.back_card_photo.subsample(BACK_OF_CARD_SCALE_FACTOR, BACK_OF_CARD_SCALE_FACTOR)
-        self.claim_options = [
-            "High card",
-            "Pair",
-            "Two pair",
-            "Three of a kind",
-            "Straight",
-            "Flush",
-            "Full house",
-            "Four of a kind",
-            "Five of a kind",
-            "Six of a kind",
-            "Straight flush",
-            "Royal flush",
-            "Seven of a kind",
-            "Eight of a kind"
-        ]
+        self.claim_options = CLAIM_OPTIONS.copy()
         self.welcome()
 
     def welcome(self):
@@ -81,7 +80,17 @@ class Application(Frame):
         self.num_players = int(self.num_players_spinbox.get())
         self.starting_num_of_cards = int(self.num_cards_spinbox.get())
 
-        self.game_obj = Game(self.num_players, self.starting_num_of_cards, NUMBER_OF_STRIKES)
+        self.table = Table(NUMBER_OF_STRIKES)
+        for num in range(self.num_players):
+            self.table.add_player(Player(NUMBER_OF_STRIKES))
+        self.players = self.table.get_players()
+        self.current_player = 0
+        self.claim_cutoff = 0
+        self.rank_cutoff = 0
+        self.table.distribute_cards()
+        self.player_frames = []
+
+        # Show facing down cards of players
         for i in range(self.num_players):
             current_label = Label(self.board_frame,
                                   text = "Player " + str(i+1),
@@ -94,24 +103,21 @@ class Application(Frame):
             else:
                 current_label.grid(row=i-4, column=2)
                 card_frame.grid(row=i-4, column=3)
+            self.player_frames.append(card_frame)
             self.display_back_cards(card_frame, self.starting_num_of_cards)
 
-        self.table_obj = self.game_obj.get_table()
-        self.players = self.table_obj.get_players()
-
-
-        self.set_up_options()
+        self.options_frame = Frame(self)
+        self.options_frame.grid(row=1)
+        # self.get_player_turn()
 
     def display_back_cards(self, parent_frame, num_of_cards):
         interval = (parent_frame.winfo_reqwidth() - self.back_card_photo.width())/(parent_frame.winfo_reqwidth() * (MAXIMUM_STARTING_CARDS - 1))
         for i in range(num_of_cards):
             Label(parent_frame, image=self.back_card_photo).place(relx=i*interval)
 
-    def set_up_options(self):
-        self.options_frame = Frame(self)
-        self.options_frame.grid(row = 1)
+    def get_player_turn(self):
         self.current_player_label = Label(self.options_frame,
-                                          text = "Current turn: ")
+                                          text = "Current turn: Player "+str(self.current_player))
         self.current_player_label.grid(row = 0)
 
         self.hand_label = Label(self.options_frame,
@@ -121,6 +127,19 @@ class Application(Frame):
         self.hand_menu_str.set(self.claim_options[0])
         self.hand_menu = OptionMenu(self.options_frame, self.hand_menu_str, *self.claim_options)
         self.hand_menu.grid(row = 1, column = 1)
+        self.options_choice_frame = Frame(self.options_frame)
+        self.options_choice_frame.grid(row = 1, column = 2)
+        # self.hand_menu_str.trace("w", self.handle_choice)
+
+    # def handle_choice(self):
+    #     choice = self.hand_menu_str.get()
+    #     if choice in ["High card","Pair","Three of a kind","Four of a kind","Five of a kind","Six of a kind","Seven of a kind","Eight of a kind"]:
+    #         question_label = Label(self.options_choice_frame,
+    #                                text = "Specify the rank of the card:")
+    #         question_label.grid(row = 0, column = 0)
+    #         rank_menu = OptionMenu(self)
+    #     elif choice == "Straight":
+
 
 def main():
     root = Tk()
