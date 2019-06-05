@@ -25,3 +25,6 @@ class Table(object):
             player.empty_hand()
         self.deck.reset()
 
+    # refer to method in deck
+    def contains(self, hand_type, rank_bound, rank_bound2=None, count_bound=None, suit_bound=None):
+        return self.deck.contains(hand_type, rank_bound, rank_bound2, count_bound, suit_bound)
