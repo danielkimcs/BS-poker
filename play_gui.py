@@ -143,6 +143,7 @@ class Application(Frame):
                 self.display_player_cards(i)
 
     def get_player_turn(self):
+        self.clear_frame(self.options_frame)
         self.current_player_label = Label(self.options_frame,
                                           text = "Current turn: Player "+str(self.current_player+1))
         self.current_player_label.grid(row = 0, column = 0)
@@ -157,10 +158,14 @@ class Application(Frame):
         self.options_choice_frame = Frame(self.options_frame)
         self.options_choice_frame.grid(row = 1, column = 2)
         self.hand_menu_str.trace("w", self.handle_choice)
-        self.bs_btn = Button(self.options_frame,
-                             text = "Call BS",
-                             command = self.handle_bs)
-        self.bs_btn.grid(row = 0, column = 1)
+        if self.current_claim != -1:
+            self.bs_btn = Button(self.options_frame,
+                                 text = "Call BS",
+                                 command = self.handle_bs)
+            self.bs_btn.grid(row = 0, column = 1)
+        self.claim_btn = Button(self.options_frame,
+                                text = "Claim hand")
+        self.claim_btn.grid(row = 0, column = 2)
 
     def handle_choice(self, *args):
         # TODO: Finish rest of possible player choices
@@ -198,6 +203,7 @@ class Application(Frame):
         if self.hand_menu_str.get() == "Select one":
             print("Invalid!")
         # TODO: Handle what happens when a player calls BS on the previous claim
+        # Show everyone's cards, use Deck.contains, determine whether the hand exists or not
 
     def get_image_url(self, rank, suit):
         url_rank = ""
