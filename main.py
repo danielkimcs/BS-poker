@@ -28,6 +28,7 @@ CLAIM_OPTIONS = ["High card",
                  "Seven of a kind",
                  "Eight of a kind"]
 RANK_OPTIONS = ["3", "4", "5", "6", "7", "8", "9", "10", "J", "K", "A"]
+SUIT_OPTIONS = ["Spades", "Hearts", "Clubs", "Diamonds"]
 
 class Application(Frame):
     def __init__(self, master):
@@ -195,7 +196,22 @@ class Application(Frame):
             rank_str.set(RANK_OPTIONS[self.current_rank + 1] if choice == self.current_claim else RANK_OPTIONS[0])
             rank_menu = OptionMenu(self.options_choice_frame, rank_str, *RANK_OPTIONS[(self.current_rank + 1):] if choice == self.current_claim else RANK_OPTIONS)
             rank_menu.grid(row=0, column=1)
-        #elif choice == "Flush" or choice == "Straight flush":
+        elif choice == "Flush" or choice == "Straight flush":
+            question_label_suit = Label(self.options_choice_frame,
+                                        text="Specify the suit of the highest card:")
+            question_label_suit.grid(row=1, column=0)
+            suit_str = StringVar()
+            suit_str.set(RANK_OPTIONS[self.current_rank + 1] if choice == self.current_claim else RANK_OPTIONS[0])
+            suit_menu = OptionMenu(self.options_choice_frame, suit_str, *RANK_OPTIONS[(self.current_rank + 1):] if choice == self.current_claim else RANK_OPTIONS)
+            suit_menu.grid(row=1, column=1)
+
+            question_label_rank = Label(self.options_choice_frame,
+                                   text="Specify the rank of the highest card:")
+            question_label_rank.grid(row=0, column=0)
+            rank_str = StringVar()
+            rank_str.set(RANK_OPTIONS[self.current_rank + 1] if choice == self.current_claim else RANK_OPTIONS[0])
+            rank_menu = OptionMenu(self.options_choice_frame, rank_str, *RANK_OPTIONS[(self.current_rank + 1):] if choice == self.current_claim else RANK_OPTIONS)
+            rank_menu.grid(row=0, column=1)
         # elif choice == "Full house":
         # elif choice == "Royal flush":
 
