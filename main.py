@@ -203,8 +203,8 @@ class Application(Frame):
                                         text="Specify the suit of the highest card:")
             question_label_suit.grid(row=1, column=0)
             suit_str = StringVar()
-            suit_str.set(RANK_OPTIONS[self.current_rank + 1] if choice == self.current_claim else RANK_OPTIONS[0])
-            suit_menu = OptionMenu(self.options_choice_frame, suit_str, *RANK_OPTIONS[(self.current_rank + 1):] if choice == self.current_claim else RANK_OPTIONS)
+            suit_str.set(SUIT_OPTIONS[self.current_suit + 1] if choice == self.current_claim else SUIT_OPTIONS[0])
+            suit_menu = OptionMenu(self.options_choice_frame, suit_str, *SUIT_OPTIONS[(self.current_suit + 1):] if choice == self.current_claim else SUIT_OPTIONS)
             suit_menu.grid(row=1, column=1)
 
             question_label_rank = Label(self.options_choice_frame,
@@ -214,7 +214,14 @@ class Application(Frame):
             rank_str.set(RANK_OPTIONS[self.current_rank + 1] if choice == self.current_claim else RANK_OPTIONS[0])
             rank_menu = OptionMenu(self.options_choice_frame, rank_str, *RANK_OPTIONS[(self.current_rank + 1):] if choice == self.current_claim else RANK_OPTIONS)
             rank_menu.grid(row=0, column=1)
-        # elif choice == "Full house":
+        elif choice == "Full house":
+            question_label_rank = Label(self.options_choice_frame,
+                                   text="Specify the rank of triple:")
+            question_label_rank.grid(row=0, column=0)
+            rank_str = StringVar()
+            rank_str.set(RANK_OPTIONS[self.current_rank + 1] if choice == self.current_claim else RANK_OPTIONS[0])
+            rank_menu = OptionMenu(self.options_choice_frame, rank_str, *RANK_OPTIONS[(self.current_rank + 1):] if choice == self.current_claim else RANK_OPTIONS)
+            rank_menu.grid(row=0, column=1)
         # elif choice == "Royal flush":
 
     def handle_bs(self):
