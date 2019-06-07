@@ -50,6 +50,7 @@ class Application(Frame):
         self.num_players_label = Label(self.welcome_frame,
                                        text="Number of players:",
                                        height=2)
+        self.num_players_label.config(wraplength = 100)
         self.num_players_label.grid(row=1, column=1, columnspan=2, sticky=W)
         self.num_players_spinbox = Spinbox(self.welcome_frame,
                                            from_=MINIMUM_PLAYERS,
@@ -59,7 +60,8 @@ class Application(Frame):
         self.num_players_spinbox.grid(row=1, column=3)
         self.num_cards_label = Label(self.welcome_frame,
                                        text="Starting number of cards:",
-                                       height=2)
+                                       heigh=3)
+        self.num_cards_label.config(wraplength=70)
         self.num_cards_label.grid(row=2, column=1, columnspan=2, sticky=W)
         self.num_cards_spinbox = Spinbox(self.welcome_frame,
                                          from_=MINIMUM_STARTING_CARDS,
