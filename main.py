@@ -171,7 +171,7 @@ class Application(Frame):
         # TODO: Finish rest of possible player choices
         self.clear_frame(self.options_choice_frame)
         choice = self.hand_menu_str.get()
-        if choice in ["High card","Pair","Three of a kind","Full house","Four of a kind","Five of a kind","Six of a kind","Seven of a kind","Eight of a kind"]:
+        if choice in ["High card","Pair","Three of a kind","Four of a kind","Five of a kind","Six of a kind","Seven of a kind","Eight of a kind"]:
             question_label = Label(self.options_choice_frame,
                                    text = "Specify the rank of the card:")
             question_label.grid(row = 0, column = 0)
