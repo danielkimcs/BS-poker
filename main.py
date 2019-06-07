@@ -200,7 +200,7 @@ class Application(Frame):
             rank_menu.grid(row=0, column=1)
         elif choice == "Flush" or choice == "Straight flush":
             question_label_suit = Label(self.options_choice_frame,
-                                        text="Specify the suit of the highest card:")
+                                        text="Specify the suit:")
             question_label_suit.grid(row=1, column=0)
             suit_str = StringVar()
             suit_str.set(SUIT_OPTIONS[self.current_suit + 1] if choice == self.current_claim else SUIT_OPTIONS[0])
@@ -222,7 +222,14 @@ class Application(Frame):
             rank_str.set(RANK_OPTIONS[self.current_rank + 1] if choice == self.current_claim else RANK_OPTIONS[0])
             rank_menu = OptionMenu(self.options_choice_frame, rank_str, *RANK_OPTIONS[(self.current_rank + 1):] if choice == self.current_claim else RANK_OPTIONS)
             rank_menu.grid(row=0, column=1)
-        # elif choice == "Royal flush":
+        elif choice == "Royal flush":
+            question_label_suit = Label(self.options_choice_frame,
+                                        text="Specify the suit:")
+            question_label_suit.grid(row=0, column=0)
+            suit_str = StringVar()
+            suit_str.set(SUIT_OPTIONS[self.current_suit + 1] if choice == self.current_claim else SUIT_OPTIONS[0])
+            suit_menu = OptionMenu(self.options_choice_frame, suit_str, *SUIT_OPTIONS[(self.current_suit + 1):] if choice == self.current_claim else SUIT_OPTIONS)
+            suit_menu.grid(row=0, column=1)
 
     def handle_bs(self):
         if self.hand_menu_str.get() == "Select one":
