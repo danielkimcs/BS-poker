@@ -181,8 +181,8 @@ class Application(Frame):
                                             text="Specify the rank of the highest card:")
                 question_label_rank.grid(row=0, column=0)
                 rank_str = StringVar()
-                rank_str.set(RANK_OPTIONS[self.current_rank + 1] if choice == self.current_claim else RANK_OPTIONS[0])
-                rank_menu = OptionMenu(self.options_choice_frame, rank_str, *RANK_OPTIONS[(self.current_rank + 1):] if choice == self.current_claim else RANK_OPTIONS)
+                rank_str.set(RANK_OPTIONS[self.current_rank + 1] if choice == self.current_claim else (RANK_OPTIONS[0] if choice not in ["Flush","Straight","Straight flush"] else RANK_OPTIONS[3]))
+                rank_menu = OptionMenu(self.options_choice_frame, rank_str, *RANK_OPTIONS[max(3,self.current_rank + 1):] if choice == self.current_claim else (RANK_OPTIONS if choice not in ["Flush","Straight flush"] else RANK_OPTIONS[3:]))
                 rank_menu.grid(row=0, column=1)
 
                 question_label_suit = Label(self.options_choice_frame,
@@ -197,8 +197,8 @@ class Application(Frame):
                                        text="Specify the rank of the highest card:")
                 question_label.grid(row=0, column=0)
                 rank_str = StringVar()
-                rank_str.set(RANK_OPTIONS[self.current_rank + 1] if choice == self.current_claim else RANK_OPTIONS[0])
-                rank_menu = OptionMenu(self.options_choice_frame, rank_str, *RANK_OPTIONS[max(3,self.current_rank + 1):] if choice == self.current_claim else RANK_OPTIONS)
+                rank_str.set(RANK_OPTIONS[self.current_rank + 1] if choice == self.current_claim else (RANK_OPTIONS[0] if choice not in ["Flush","Straight","Straight flush"] else RANK_OPTIONS[3]))
+                rank_menu = OptionMenu(self.options_choice_frame, rank_str, *RANK_OPTIONS[max(3,self.current_rank + 1):] if choice == self.current_claim else (RANK_OPTIONS if choice not in ["Flush","Straight flush"] else RANK_OPTIONS[3:]))
                 rank_menu.grid(row=0, column=1)
             elif choice == "Royal flush":
                 question_label_suit = Label(self.options_choice_frame,
@@ -231,9 +231,11 @@ class Application(Frame):
     #     user_choice = self.hand_menu_str.get()
     #     if user_choice == "Select one":
     #         print("Invalid!")
-    #     elif user_choice in ["High card","Pair","Three of a kind","Four of a kind","Five of a kind","Six of a kind","Seven of a kind","Eight of a kind"]:
-    #         self.current_claim = self.get_index_of_claim(user_choice)
-    #         self.
+    #     elif user_choice in ["Flush","Straight flush"]:
+    #
+    #     elif user_choice == "Royal flush":
+    #     else:
+
 
     def get_image_url(self, rank, suit):
         assert rank in Card.RANKS
