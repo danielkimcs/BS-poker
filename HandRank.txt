@@ -1,14 +1,14 @@
-1- high card
-2- pair
-3- two pair
-4- three of a kind
-5- straight
-6- flush
-7- full house
-8- four of a kind
-9- five of a kind
-10- six of a kind
-11- straight flush
-12- royal flush
-13- seven of a kind
-14- eight of a kind
+1- high card: 1 of a card
+2- pair: 2 of the same cards
+3- two pair: 2 paris of 2 different cards
+4- three of a kind: 3 of one card
+5- straight: 5 consecutive cards up to the given card
+6- flush: 5 cards of the same suit
+7- full house: 3 of a kind and 2 of a kind
+8- four of a kind: 4 of the same card
+9- five of a kind: 5 of the same card
+10- six of a kind: 6 of the same card
+11- straight flush: 5 consecutive cards up to the given card of the same suit
+12- royal flush: straight flush to ace(14)
+13- seven of a kind: 7 of the same card
+14- eight of a kind: 8 of the same card
