@@ -33,7 +33,8 @@ class Deck(object):
     Deck.contains - parameters:
 
     hand_type:  "single" - high card, pair, triple, 4, 5, 6, 7, 8 (count_bound = the number of cards)
-                "wild 2" - two pair (count_bound = 2), full house (count_bound = 3)
+                "full house" - full house
+                "two pair" - two pair
                 "five" - straight, flush, straight-flush
 
     hand_type - pretty self explanatory. The type of hand you are checking for.
@@ -48,7 +49,6 @@ class Deck(object):
     count_bound -
     1. the number of x of a kinds (1, 2, 3, 4, ... , 7, 8)
     2. the number of cards in a straight or flush (should be 5, can be more)
-    3. the number of cards in "wild 2". So 3 for full house and 2 for two pair
 
     suit_bound - for flushes, the suit it is in
     """
@@ -67,14 +67,22 @@ class Deck(object):
             assert rank_bound is not None and count_bound is not None
             count = sum(self.deck[rank_bound])
             return count + count_wild >= count_bound
-        if hand_type == "wild 2":
-            assert rank_bound is not None and count_bound is not None
+        if hand_type == "full house":
+            assert rank_bound is not None
             count = sum(self.deck[rank_bound])
             count2 = 0
             for i in range(1, Deck.NUM_RANKS):
                 if i != rank_bound:
                     count2 = max(sum(self.deck[i]), count2)
-            return count_wild + min(count - count_bound, 0) + min(count2 - 2, 0) >= 0
+            return count_wild + min(count - 3, 0) + min(count2 - 2, 0) >= 0
+        if hand_type == "two pair":
+            assert rank_bound is not None
+            count = sum(self.deck[rank_bound])
+            count2 = 0
+            for i in range(1, Deck.NUM_RANKS):
+                if i < rank_bound:
+                    count2 = max(sum(self.deck[i]), count2)
+            return count_wild + min(count - 2, 0) + min(count2 - 2, 0) >= 0
         # should be able to deal with straights and flushes with more than 5.
         if hand_type == "five":
             search_range = self.deck
