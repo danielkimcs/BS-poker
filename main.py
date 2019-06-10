@@ -167,79 +167,75 @@ class Application(Frame):
                                  command = self.handle_bs)
             self.bs_btn.grid(row = 0, column = 1)
         self.claim_btn = Button(self.options_frame,
-                                text = "Claim hand")
+                                text = "Claim hand",
+                                command = self.handle_claim)
         self.claim_btn.grid(row = 0, column = 2)
 
     def handle_choice(self, *args):
-        # TODO: Finish rest of possible player choices
         self.clear_frame(self.options_choice_frame)
         choice = self.hand_menu_str.get()
-        if choice in ["High card","Pair","Three of a kind","Four of a kind","Five of a kind","Six of a kind","Seven of a kind","Eight of a kind"]:
+
+        if choice in ["Flush","Straight","Straight flush","Royal flush"]:
+            if choice == "Flush" or choice == "Straight flush":
+                question_label_rank = Label(self.options_choice_frame,
+                                            text="Specify the rank of the highest card:")
+                question_label_rank.grid(row=0, column=0)
+                rank_str = StringVar()
+                rank_str.set(RANK_OPTIONS[self.current_rank + 1] if choice == self.current_claim else RANK_OPTIONS[0])
+                rank_menu = OptionMenu(self.options_choice_frame, rank_str, *RANK_OPTIONS[(self.current_rank + 1):] if choice == self.current_claim else RANK_OPTIONS)
+                rank_menu.grid(row=0, column=1)
+
+                question_label_suit = Label(self.options_choice_frame,
+                                            text="Specify the suit:")
+                question_label_suit.grid(row=1, column=0)
+                suit_str = StringVar()
+                suit_str.set(SUIT_OPTIONS[0])
+                suit_menu = OptionMenu(self.options_choice_frame, suit_str, *SUIT_OPTIONS)
+                suit_menu.grid(row=1, column=1)
+            elif choice == "Straight":
+                question_label = Label(self.options_choice_frame,
+                                       text="Specify the rank of the highest card:")
+                question_label.grid(row=0, column=0)
+                rank_str = StringVar()
+                rank_str.set(RANK_OPTIONS[self.current_rank + 1] if choice == self.current_claim else RANK_OPTIONS[0])
+                rank_menu = OptionMenu(self.options_choice_frame, rank_str, *RANK_OPTIONS[max(3,self.current_rank + 1):] if choice == self.current_claim else RANK_OPTIONS)
+                rank_menu.grid(row=0, column=1)
+            elif choice == "Royal flush":
+                question_label_suit = Label(self.options_choice_frame,
+                                            text="Specify the suit:")
+                question_label_suit.grid(row=0, column=0)
+                suit_str = StringVar()
+                suit_str.set(SUIT_OPTIONS[0])
+                suit_menu = OptionMenu(self.options_choice_frame, suit_str, *SUIT_OPTIONS)
+                suit_menu.grid(row=0, column=1)
+        else:
             question_label = Label(self.options_choice_frame,
-                                   text = "Specify the rank of the card:")
-            question_label.grid(row = 0, column = 0)
-            rank_str = StringVar()
-            rank_str.set(RANK_OPTIONS[self.current_rank+1] if choice == self.current_claim else RANK_OPTIONS[0])
-            rank_menu = OptionMenu(self.options_choice_frame, rank_str, *RANK_OPTIONS[(self.current_rank + 1):] if choice == self.current_claim else RANK_OPTIONS)
-            rank_menu.grid(row = 0, column = 1)
-        # elif choice == "Two pair":
-        #     question_label = Label(self.options_choice_frame,
-        #                            text="Specify ranks of both pairs:")
-        #     question_label.grid(row=0, column=0)
-        #     rank1_str = StringVar()
-        #     rank1_str.set(RANK_OPTIONS[self.current_rank + 1] if choice == self.current_claim else RANK_OPTIONS[0])
-        #     rank_menu = OptionMenu(self.options_choice_frame, rank1_str, *RANK_OPTIONS[(self.current_rank + 1):] if choice == self.current_claim else RANK_OPTIONS)
-        #     rank_menu.grid(row=0, column=1)
-        elif choice == "Straight":
-            question_label = Label(self.options_choice_frame,
-                                   text="Specify the rank of the highest card:")
+                                   text="")
             question_label.grid(row=0, column=0)
             rank_str = StringVar()
             rank_str.set(RANK_OPTIONS[self.current_rank + 1] if choice == self.current_claim else RANK_OPTIONS[0])
             rank_menu = OptionMenu(self.options_choice_frame, rank_str, *RANK_OPTIONS[(self.current_rank + 1):] if choice == self.current_claim else RANK_OPTIONS)
             rank_menu.grid(row=0, column=1)
-        elif choice == "Flush" or choice == "Straight flush":
-            question_label_suit = Label(self.options_choice_frame,
-                                        text="Specify the suit:")
-            question_label_suit.grid(row=1, column=0)
-            suit_str = StringVar()
-            suit_str.set(SUIT_OPTIONS[self.current_suit + 1] if choice == self.current_claim else SUIT_OPTIONS[0])
-            suit_menu = OptionMenu(self.options_choice_frame, suit_str, *SUIT_OPTIONS[(self.current_suit + 1):] if choice == self.current_claim else SUIT_OPTIONS)
-            suit_menu.grid(row=1, column=1)
+            if choice in ["High card","Pair","Three of a kind","Four of a kind","Five of a kind","Six of a kind","Seven of a kind","Eight of a kind"]:
+                question_label.configure(text = "Specify the rank of the card:")
+            elif choice == "Two pair":
+                question_label.configure(text="Specify the rank of the higher pair:")
+            elif choice == "Full house":
+                question_label.configure(text="Specify the rank of triple:")
 
-            question_label_rank = Label(self.options_choice_frame,
-                                   text="Specify the rank of the highest card:")
-            question_label_rank.grid(row=0, column=0)
-            rank_str = StringVar()
-            rank_str.set(RANK_OPTIONS[self.current_rank + 1] if choice == self.current_claim else RANK_OPTIONS[0])
-            rank_menu = OptionMenu(self.options_choice_frame, rank_str, *RANK_OPTIONS[(self.current_rank + 1):] if choice == self.current_claim else RANK_OPTIONS)
-            rank_menu.grid(row=0, column=1)
-        elif choice == "Full house":
-            question_label_rank = Label(self.options_choice_frame,
-                                   text="Specify the rank of triple:")
-            question_label_rank.grid(row=0, column=0)
-            rank_str = StringVar()
-            rank_str.set(RANK_OPTIONS[self.current_rank + 1] if choice == self.current_claim else RANK_OPTIONS[0])
-            rank_menu = OptionMenu(self.options_choice_frame, rank_str, *RANK_OPTIONS[(self.current_rank + 1):] if choice == self.current_claim else RANK_OPTIONS)
-            rank_menu.grid(row=0, column=1)
-        elif choice == "Royal flush":
-            question_label_suit = Label(self.options_choice_frame,
-                                        text="Specify the suit:")
-            question_label_suit.grid(row=0, column=0)
-            suit_str = StringVar()
-            suit_str.set(SUIT_OPTIONS[self.current_suit + 1] if choice == self.current_claim else SUIT_OPTIONS[0])
-            suit_menu = OptionMenu(self.options_choice_frame, suit_str, *SUIT_OPTIONS[(self.current_suit + 1):] if choice == self.current_claim else SUIT_OPTIONS)
-            suit_menu.grid(row=0, column=1)
+    # def handle_bs(self):
+    #     # TODO: Handle what happens when a player calls BS on the previous claim
+    #     # Show everyone's cards, use Deck.contains, determine whether the hand exists or not
 
-    def handle_bs(self):
-        if self.hand_menu_str.get() == "Select one":
-            print("Invalid!")
-        # TODO: Handle what happens when a player calls BS on the previous claim
-        # Show everyone's cards, use Deck.contains, determine whether the hand exists or not
+    # def handle_claim(self):
+    #     user_choice = self.hand_menu_str.get()
+    #     if user_choice == "Select one":
+    #         print("Invalid!")
+    #     elif user_choice in ["High card","Pair","Three of a kind","Four of a kind","Five of a kind","Six of a kind","Seven of a kind","Eight of a kind"]:
+    #         self.current_claim = self.get_index_of_claim(user_choice)
+    #         self.
 
     def get_image_url(self, rank, suit):
-        url_rank = ""
-        url_suit = ""
         assert rank in Card.RANKS
         assert suit in Card.SUITS
 
@@ -261,6 +257,14 @@ class Application(Frame):
     def clear_frame(self, frame):
         for widget in frame.winfo_children():
             widget.destroy()
+
+    def get_index_of_claim(self,choice):
+        index = 0
+        for hand in CLAIM_OPTIONS:
+            if hand == choice:
+                return index
+            index += 1
+        return -1
 
 def main():
     root = Tk()

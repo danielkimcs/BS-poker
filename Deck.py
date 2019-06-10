@@ -32,8 +32,8 @@ class Deck(object):
     """
     Deck.contains - parameters:
 
-    hand_type:  "single" - high card, pair, triple, 4, 5, 6, 7, 8
-                "wild 2" - two pair, full house
+    hand_type:  "single" - high card, pair, triple, 4, 5, 6, 7, 8 (count_bound = the number of cards)
+                "wild 2" - two pair (count_bound = 2), full house (count_bound = 3)
                 "five" - straight, flush, straight-flush
 
     hand_type - pretty self explanatory. The type of hand you are checking for.
@@ -43,9 +43,7 @@ class Deck(object):
     1. in the case of highs, pairs, doubles, full houses, it is just the primary rank being searched for
     2. in the case of a flush or straight, it is the upper bound of the rank.
 
-    rank_bound2 -
-    1. in the case of two pair, it is the second rank
-    2. in the case of straights, it is the lower bound of the rank
+    rank_bound2 - in the case of straights, it is the lower bound of the rank
 
     count_bound -
     1. the number of x of a kinds (1, 2, 3, 4, ... , 7, 8)
