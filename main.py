@@ -30,6 +30,15 @@ CLAIM_OPTIONS = ["High card",
 RANK_OPTIONS = ["3", "4", "5", "6", "7", "8", "9", "10", "J", "K", "A"]
 SUIT_OPTIONS = ["Spades", "Hearts", "Clubs", "Diamonds"]
 
+
+def get_index(choice, l):
+    index = 0
+    for item in l:
+        if item == choice:
+            return index
+        index += 1
+    return -1
+
 class Application(Frame):
     def __init__(self, master):
         super(Application, self).__init__(master)
@@ -88,13 +97,21 @@ class Application(Frame):
         for num in range(self.num_players):
             self.table.add_player(Player(self.starting_num_of_cards))
         self.players = self.table.get_players()
+        self.ousted_players = []
 
         # Variables that will change during the game
-        self.current_player = 0
-        self.current_claim = -1
+
+        self.current_player = 0 # Current player
+
+        # The current stats that we compare
+        self.current_claim = 0
         self.current_rank = -1
         self.current_suit = -1
 
+        # Keep track of widgets
+        self.selected_widgets = (None, None)
+
+        # Begin
         self.table.distribute_cards()
         self.player_frames = []
 
@@ -112,7 +129,7 @@ class Application(Frame):
                 current_label.grid(row=i-4, column=2)
                 card_frame.grid(row=i-4, column=3)
             self.player_frames.append(card_frame)
-        self.show_and_hide_cards()
+        self.show_and_hide_cards(show=(0,))
 
         self.options_frame = Frame(self)
         self.options_frame.grid(row=1)
@@ -146,30 +163,33 @@ class Application(Frame):
                 self.display_player_cards(i)
 
     def get_player_turn(self):
+        self.print_status()
         self.clear_frame(self.options_frame)
         self.current_player_label = Label(self.options_frame,
                                           text = "Current turn: Player "+str(self.current_player+1))
         self.current_player_label.grid(row = 0, column = 0)
+        if not (self.current_claim == len(CLAIM_OPTIONS) - 1 and self.current_rank == len(RANK_OPTIONS) - 1):
+            self.hand_label = Label(self.options_frame,
+                                    text = "Claim hand:")
+            self.hand_label.grid(row = 1, column = 0)
+            self.hand_menu_str = StringVar()
+            self.hand_menu_str.set("Select one")
+            self.hand_menu = OptionMenu(self.options_frame, self.hand_menu_str, *CLAIM_OPTIONS[self.current_claim:] if self.current_rank < len(RANK_OPTIONS) - 1 else CLAIM_OPTIONS[(self.current_claim+1):])
+            self.hand_menu.grid(row = 1, column = 1)
+            self.options_choice_frame = Frame(self.options_frame)
+            self.options_choice_frame.grid(row = 1, column = 2)
+            self.hand_menu_str.trace("w", self.handle_choice)
+            self.claim_btn = Button(self.options_frame,
+                                    text = "Claim hand",
+                                    command = self.handle_claim)
+            self.claim_btn.grid(row = 0, column = 2)
+        # else: Force the next player to BS it
 
-        self.hand_label = Label(self.options_frame,
-                                text = "Claim hand:")
-        self.hand_label.grid(row = 1, column = 0)
-        self.hand_menu_str = StringVar()
-        self.hand_menu_str.set("Select one")
-        self.hand_menu = OptionMenu(self.options_frame, self.hand_menu_str, *CLAIM_OPTIONS[(self.current_claim+1):])
-        self.hand_menu.grid(row = 1, column = 1)
-        self.options_choice_frame = Frame(self.options_frame)
-        self.options_choice_frame.grid(row = 1, column = 2)
-        self.hand_menu_str.trace("w", self.handle_choice)
-        if self.current_claim != -1:
-            self.bs_btn = Button(self.options_frame,
-                                 text = "Call BS",
-                                 command = self.handle_bs)
-            self.bs_btn.grid(row = 0, column = 1)
-        self.claim_btn = Button(self.options_frame,
-                                text = "Claim hand",
-                                command = self.handle_claim)
-        self.claim_btn.grid(row = 0, column = 2)
+        # if self.current_claim != -1:
+        #     self.bs_btn = Button(self.options_frame,
+        #                          text = "Call BS",
+        #                          command = self.handle_bs)
+        #     self.bs_btn.grid(row = 0, column = 1)
 
     def handle_choice(self, *args):
         self.clear_frame(self.options_choice_frame)
@@ -181,8 +201,8 @@ class Application(Frame):
                                             text="Specify the rank of the highest card:")
                 question_label_rank.grid(row=0, column=0)
                 rank_str = StringVar()
-                rank_str.set(RANK_OPTIONS[self.current_rank + 1] if choice == self.current_claim else (RANK_OPTIONS[0] if choice not in ["Flush","Straight","Straight flush"] else RANK_OPTIONS[3]))
-                rank_menu = OptionMenu(self.options_choice_frame, rank_str, *RANK_OPTIONS[max(3,self.current_rank + 1):] if choice == self.current_claim else (RANK_OPTIONS if choice not in ["Flush","Straight flush"] else RANK_OPTIONS[3:]))
+                rank_str.set(RANK_OPTIONS[self.current_rank + 1] if choice == CLAIM_OPTIONS[self.current_claim] else (RANK_OPTIONS[0] if choice not in ["Flush","Straight","Straight flush"] else RANK_OPTIONS[3]))
+                rank_menu = OptionMenu(self.options_choice_frame, rank_str, *RANK_OPTIONS[max(3,self.current_rank + 1):] if choice == CLAIM_OPTIONS[self.current_claim] else (RANK_OPTIONS if choice not in ["Straight","Flush","Straight flush"] else RANK_OPTIONS[3:]))
                 rank_menu.grid(row=0, column=1)
 
                 question_label_suit = Label(self.options_choice_frame,
@@ -192,14 +212,16 @@ class Application(Frame):
                 suit_str.set(SUIT_OPTIONS[0])
                 suit_menu = OptionMenu(self.options_choice_frame, suit_str, *SUIT_OPTIONS)
                 suit_menu.grid(row=1, column=1)
+                self.selected_widgets = (rank_str, suit_str)
             elif choice == "Straight":
                 question_label = Label(self.options_choice_frame,
                                        text="Specify the rank of the highest card:")
                 question_label.grid(row=0, column=0)
                 rank_str = StringVar()
-                rank_str.set(RANK_OPTIONS[self.current_rank + 1] if choice == self.current_claim else (RANK_OPTIONS[0] if choice not in ["Flush","Straight","Straight flush"] else RANK_OPTIONS[3]))
-                rank_menu = OptionMenu(self.options_choice_frame, rank_str, *RANK_OPTIONS[max(3,self.current_rank + 1):] if choice == self.current_claim else (RANK_OPTIONS if choice not in ["Flush","Straight flush"] else RANK_OPTIONS[3:]))
+                rank_str.set(RANK_OPTIONS[self.current_rank + 1] if choice == CLAIM_OPTIONS[self.current_claim] else (RANK_OPTIONS[0] if choice not in ["Flush","Straight","Straight flush"] else RANK_OPTIONS[3]))
+                rank_menu = OptionMenu(self.options_choice_frame, rank_str, *RANK_OPTIONS[max(3,self.current_rank + 1):] if choice == CLAIM_OPTIONS[self.current_claim] else (RANK_OPTIONS if choice not in ["Straight","Flush","Straight flush"] else RANK_OPTIONS[3:]))
                 rank_menu.grid(row=0, column=1)
+                self.selected_widgets = (rank_str, None)
             elif choice == "Royal flush":
                 question_label_suit = Label(self.options_choice_frame,
                                             text="Specify the suit:")
@@ -208,14 +230,16 @@ class Application(Frame):
                 suit_str.set(SUIT_OPTIONS[0])
                 suit_menu = OptionMenu(self.options_choice_frame, suit_str, *SUIT_OPTIONS)
                 suit_menu.grid(row=0, column=1)
+                self.selected_widgets = (None, suit_str)
         else:
             question_label = Label(self.options_choice_frame,
                                    text="")
             question_label.grid(row=0, column=0)
             rank_str = StringVar()
-            rank_str.set(RANK_OPTIONS[self.current_rank + 1] if choice == self.current_claim else RANK_OPTIONS[0])
-            rank_menu = OptionMenu(self.options_choice_frame, rank_str, *RANK_OPTIONS[(self.current_rank + 1):] if choice == self.current_claim else RANK_OPTIONS)
+            rank_str.set(RANK_OPTIONS[self.current_rank + 1] if choice == CLAIM_OPTIONS[self.current_claim] else RANK_OPTIONS[0])
+            rank_menu = OptionMenu(self.options_choice_frame, rank_str, *RANK_OPTIONS[(self.current_rank + 1):] if choice == CLAIM_OPTIONS[self.current_claim] else RANK_OPTIONS)
             rank_menu.grid(row=0, column=1)
+            self.selected_widgets = (rank_str, None)
             if choice in ["High card","Pair","Three of a kind","Four of a kind","Five of a kind","Six of a kind","Seven of a kind","Eight of a kind"]:
                 question_label.configure(text = "Specify the rank of the card:")
             elif choice == "Two pair":
@@ -224,18 +248,28 @@ class Application(Frame):
                 question_label.configure(text="Specify the rank of triple:")
 
     # def handle_bs(self):
-    #     # TODO: Handle what happens when a player calls BS on the previous claim
     #     # Show everyone's cards, use Deck.contains, determine whether the hand exists or not
+    #     # self.show_and_hide_cards(show=tuple([x for x in range(0,self.c)]))
 
-    # def handle_claim(self):
-    #     user_choice = self.hand_menu_str.get()
-    #     if user_choice == "Select one":
-    #         print("Invalid!")
-    #     elif user_choice in ["Flush","Straight flush"]:
-    #
-    #     elif user_choice == "Royal flush":
-    #     else:
+    def handle_claim(self):
+        user_choice = self.hand_menu_str.get()
+        if user_choice != "Select one":
+            self.current_claim = get_index(user_choice, CLAIM_OPTIONS)
+            if user_choice in ["Flush","Straight flush"]:
+                self.current_rank = get_index(self.selected_widgets[0].get(), RANK_OPTIONS)
+                self.current_suit = get_index(self.selected_widgets[1].get(), SUIT_OPTIONS)
+            elif user_choice == "Royal flush":
+                self.current_rank = -1
+                self.current_suit = get_index(self.selected_widgets[1].get(), SUIT_OPTIONS)
+            else:
+                self.current_rank = get_index(self.selected_widgets[0].get(), RANK_OPTIONS)
+                self.current_suit = -1
+            self.switch_player()
 
+    def switch_player(self):
+        self.current_player = (self.current_player + 1) % self.num_players
+        self.show_and_hide_cards(show=(self.current_player,))
+        self.get_player_turn()
 
     def get_image_url(self, rank, suit):
         assert rank in Card.RANKS
@@ -260,13 +294,11 @@ class Application(Frame):
         for widget in frame.winfo_children():
             widget.destroy()
 
-    def get_index_of_claim(self,choice):
-        index = 0
-        for hand in CLAIM_OPTIONS:
-            if hand == choice:
-                return index
-            index += 1
-        return -1
+    def print_status(self):
+        print("Player "+str(self.current_player)+"'s turn:")
+        print("current_claim: "+str(self.current_claim))
+        print("current_rank: "+str(self.current_rank))
+        print("current_suit: "+str(self.current_suit))
 
 def main():
     root = Tk()
