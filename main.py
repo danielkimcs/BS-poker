@@ -11,6 +11,7 @@ MINIMUM_STARTING_CARDS = 1
 MAXIMUM_STARTING_CARDS = 5
 NUMBER_OF_STRIKES = 5
 BACK_OF_CARD_PATH = "images/back_of_card.gif"
+PLAYER_OUT_CARD_PATH = "images/player_out.gif"
 CARD_SCALE_FACTOR = 5
 PLAYER_DECK_FRAME_WIDTH = 250
 CLAIM_OPTIONS = ["High card",
@@ -46,6 +47,9 @@ class Application(Frame):
         self.master = master
         self.back_card_photo = PhotoImage(file=BACK_OF_CARD_PATH)
         self.back_card_photo = self.back_card_photo.subsample(CARD_SCALE_FACTOR, CARD_SCALE_FACTOR)
+        self.player_out_photo = PhotoImage(file=PLAYER_OUT_CARD_PATH)
+        self.player_out_photo = self.player_out_photo.subsample(CARD_SCALE_FACTOR, CARD_SCALE_FACTOR)
+        self.ousted_players = []
         self.welcome()
 
     def welcome(self):
@@ -96,12 +100,34 @@ class Application(Frame):
         self.table = Table(NUMBER_OF_STRIKES)
         for num in range(self.num_players):
             self.table.add_player(Player(self.starting_num_of_cards))
-        self.players = self.table.get_players()
-        self.ousted_players = []
+        self.start_game()
+
+    def get_first_player(self):
+        cur = 0
+        while cur in self.ousted_players:
+            cur += 1
+        return cur
+
+    def get_next_player(self):
+        cur = (self.current_player+1) % self.num_players
+        while cur in self.ousted_players:
+            cur = (cur+1) % self.num_players
+        return cur
+
+    def player_index_map(self):
+        participating_players = []
+        for i in range(self.num_players):
+            if i not in self.ousted_players:
+                participating_players.append(i)
+        return dict(zip(participating_players, self.players))
+
+    def start_game(self):
+        self.players = self.table.get_players() # Not necessarily the same number of players in the beginning, since players will be out each round
 
         # Variables that will change during the game
 
-        self.current_player = 0 # Current player
+        self.current_player = self.get_first_player() # Current player
+        self.player_map = self.player_index_map() # Maps # of player (zero-indexed) to the Player object associated
 
         # The current stats that we compare
         self.current_claim = 0
@@ -129,11 +155,11 @@ class Application(Frame):
                 current_label.grid(row=i-4, column=2)
                 card_frame.grid(row=i-4, column=3)
             self.player_frames.append(card_frame)
-        self.show_and_hide_cards(show=(0,))
 
         self.options_frame = Frame(self)
         self.options_frame.grid(row=1)
-        self.get_player_turn()
+
+        self.get_player_turn() # Begin player's turn
 
     def display_back_cards(self, parent_frame, num_of_cards):
         interval = (parent_frame.winfo_reqwidth() - self.back_card_photo.width())/(parent_frame.winfo_reqwidth() * (MAXIMUM_STARTING_CARDS - 1))
@@ -142,7 +168,7 @@ class Application(Frame):
 
     def display_player_cards(self, player_num):
         parent_frame = self.player_frames[player_num]
-        current_player = self.players[player_num]
+        current_player = self.player_map[player_num]
         current_cards = current_player.get_cards()
         num_of_cards = len(current_cards)
         interval = (parent_frame.winfo_reqwidth() - self.back_card_photo.width())/(parent_frame.winfo_reqwidth() * (MAXIMUM_STARTING_CARDS - 1))
@@ -157,17 +183,27 @@ class Application(Frame):
     def show_and_hide_cards(self, show=()):
         for i in range(len(self.player_frames)):
             self.clear_frame(self.player_frames[i])
-            if i not in show:
-                self.display_back_cards(self.player_frames[i], len(self.players[i].get_cards()))
+            if i not in self.ousted_players:
+                if i not in show:
+                    self.display_back_cards(self.player_frames[i], len(self.player_map[i].get_cards()))
+                else:
+                    self.display_player_cards(i)
             else:
-                self.display_player_cards(i)
+                Label(self.player_frames[i], image=self.player_out_photo).place(relx=0)
 
     def get_player_turn(self):
         self.print_status()
+        # TODO: Add "confirm" screen between each player's turn so players don't get to peek at others' cards
+        self.show_and_hide_cards(show=(self.current_player,))
         self.clear_frame(self.options_frame)
+
         self.current_player_label = Label(self.options_frame,
                                           text = "Current turn: Player "+str(self.current_player+1))
         self.current_player_label.grid(row = 0, column = 0)
+
+        # TODO: Display a Label with the claim from the previous player (i.e "Player X claims High Card 5")
+
+        # If we have not exhausted all possible choices
         if not (self.current_claim == len(CLAIM_OPTIONS) - 1 and self.current_rank == len(RANK_OPTIONS) - 1):
             self.hand_label = Label(self.options_frame,
                                     text = "Claim hand:")
@@ -267,8 +303,7 @@ class Application(Frame):
             self.switch_player()
 
     def switch_player(self):
-        self.current_player = (self.current_player + 1) % self.num_players
-        self.show_and_hide_cards(show=(self.current_player,))
+        self.current_player = self.get_next_player()
         self.get_player_turn()
 
     def get_image_url(self, rank, suit):
