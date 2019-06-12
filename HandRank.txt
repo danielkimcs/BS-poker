@@ -1,6 +1,6 @@
 1- high card: 1 of a card
 2- pair: 2 of the same cards
-3- two pair: 2 paris of 2 different cards
+3- two pair: 2 pairs of 2 different cards
 4- three of a kind: 3 of one card
 5- straight: 5 consecutive cards up to the given card
 6- flush: 5 cards of the same suit
