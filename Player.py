@@ -24,3 +24,8 @@ class Player(object):
     def printHand(self):
         for card in self.get_cards():
             print(card, end=" ")
+
+    def __str__(self):
+        st = "Card Count: "+str(self.card_count)+"; Cards: "
+        for i in self.cards: st += str(i) + ", "
+        return st

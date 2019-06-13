@@ -35,4 +35,4 @@ class Card(object):
         return self.rank >= other.get_rank()
 
     def __str__(self):
-        return str(self.rank) + "," + self.suit
+        return str(self.rank) + self.suit

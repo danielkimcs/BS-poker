@@ -15,6 +15,9 @@ class Table(object):
     def get_players(self):
         return self.players
 
+    def remove_player(self, index):
+        self.players.pop(index)
+
     def distribute_cards(self):
         for player in self.players:
             for i in range(player.get_card_count()):
